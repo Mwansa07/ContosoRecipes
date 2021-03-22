@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using ContosoRecipes.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,38 +15,44 @@ namespace ContosoRecipes.Controllers
     {
         // GET: api/values
         [HttpGet]
-        public ActionResult GetRecipes()
+        public ActionResult GetRecipes([FromQuery]int count)
         {
-            string[] recipes = { "Oxtail", "Curry Chicken", "Dumplings" };
+            Recipe[] recipes = {
+                new() { Title = "Oxtail" },
+                new() { Title = "Curry Chicken" },
+                new() { Title = "Dumplings" }
+            };
 
-            if (recipes.Any())
-                return NotFound();
-
-            return Ok(recipes);
-        }
-
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
+            return Ok(recipes.Take(count));
         }
 
         // POST api/values
         [HttpPost]
-        public void CreateNewRecipes([FromBody] string value)
+        public ActionResult CreateNewRecipes([FromBody] Recipe newRecipe)
         {
+            //validate and return to database
+            bool badThingsHappened = false;
+            if (badThingsHappened)
+                return BadRequest();
+
+            return Created("", newRecipe);
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //[HttpPut("{id}")]
+        //public ActionResult Put(int id, [FromBody] string value)
+        //{
+        //    if (!recipes.Any())
+        //        return NotFound();
+
+        //    recipes[id] = value;
+
+        //    return NoContent();
+        //}
 
         // DELETE api/values/5
-        [HttpDelete]
-        public ActionResult DeleteRecipes()
+        [HttpDelete("{id}")]
+        public ActionResult DeleteRecipes(string id)
         {
             bool badThingsHappened = false;
 
